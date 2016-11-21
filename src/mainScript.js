@@ -169,6 +169,22 @@ var iteration = 1.0;
 
       
 //отрисовка моделей
+        for(var ix=0; ix<10; ix++){
+			
+          for(var iz=0; iz<10; iz++){
+			 
+			 drawBoxman([(5.0+10.0*ix), 0.75, (iz*-15.0)] , { xRot: 0, yRot: 160, zRot: 0});
+		  }
+		  
+		}
+		 for(var ix=0; ix<10; ix++){
+			
+          for(var iz=0; iz<10; iz++){
+			 
+			 drawBoxman([(-5.0*ix), 0.75, (iz*-15.0)] , { xRot: 0, yRot: 0, zRot: 0});
+		  }
+		  
+		}
 		drawBoxman([0.0, 0.7, -25.0], { xRot: 0, yRot: 160, zRot: 0});
 
 		
