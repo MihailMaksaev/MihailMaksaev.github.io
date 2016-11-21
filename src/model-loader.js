@@ -39,7 +39,7 @@
                 vertices[g].push(item["z"]);
             });
         }
-		
+		//пересборка вершин для совпадения с текстурами
 		var nevVertices = [];
 		
 		for (var gg = 0; gg < vertices.length; gg++) {

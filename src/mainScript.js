@@ -8,7 +8,7 @@ var gl;
 
 var shaderProgram;
 
-var srcTexture = ["textures/boxman.png", "textures/nehe.gif"]; 
+var srcTexture = ["textures/boxman.png", "textures/trava.jpg"]; 
 
 //масссив с изображениями и массив с текстурами из них
 var imageArray = [];
@@ -122,14 +122,115 @@ var iteration = 1.0;
 
         mat4.identity(mvMatrix);
 		
-			
+//отрисовка мира			
 		mvPushMatrix();
 		
-		mat4.translate(mvMatrix, [0.0, -3.0, -15.0]);
+		mat4.translate(mvMatrix, [0.0, -3.0, -25.0]);
 		//mat4.rotate(mvMatrix, degToRad(rotationStateObj.yRot), [0, 1, 0]);
 		//mat4.rotate(mvMatrix, degToRad(rotationStateObj.yRot), [0, 0, 0]);
        // mat4.rotate(mvMatrix, degToRad(rCube), [1, 1, 1]);
-         gl.useProgram(shaderProgram["world"]);
+
+		//console.dir(shaderProgram);
+		
+		drawWorld();
+
+        mvPopMatrix();
+		
+		
+        
+//отрисовка моделей	
+		//сохранение матрицы до вращения
+		mvPushMatrix();
+		//перемещение обьекта
+        mat4.translate(mvMatrix, [0.0, 0.7, -25.0]);
+		
+		
+        // вращение обьекта
+        mat4.rotate(mvMatrix, degToRad(rotationStateObj.xRot), [1, 0, 0]);
+        mat4.rotate(mvMatrix, degToRad(rotationStateObj.yRot), [0, 1, 0]);
+        mat4.rotate(mvMatrix, degToRad(rotationStateObj.zRot), [0, 0, 1]);
+		
+		
+		
+		drawBoxman();
+		//возвращение сохраненной матрици
+		mvPopMatrix();
+		
+//////////////////////////////////////////////////////////////////////////////////////////	
+		mvPushMatrix();
+				//перемещение обьекта
+        mat4.translate(mvMatrix, [5.0, 0.7, -32.0]);
+		
+		
+        // вращение обьекта
+        mat4.rotate(mvMatrix, degToRad(rotationStateObj.xRot), [1, 0, 0]);
+        mat4.rotate(mvMatrix, degToRad(rotationStateObj.yRot), [0, 1, 0]);
+        mat4.rotate(mvMatrix, degToRad(rotationStateObj.zRot), [0, 0, 1]);
+		
+		drawBoxman();
+		//возвращение сохраненной матрици
+		mvPopMatrix();
+		
+//////////////////////////////////////////////////////////////////////////////////////////	
+		mvPushMatrix();
+				//перемещение обьекта
+        mat4.translate(mvMatrix, [-3.0, 0.75, -12.0]);
+		
+		
+        // вращение обьекта
+        mat4.rotate(mvMatrix, degToRad(rotationStateObj.xRot), [1, 0, 0]);
+        mat4.rotate(mvMatrix, degToRad(rotationStateObj.yRot), [0, 1, 0]);
+        mat4.rotate(mvMatrix, degToRad(rotationStateObj.zRot), [0, 0, 1]);
+		
+		drawBoxman();
+		//возвращение сохраненной матрици
+		mvPopMatrix();		
+		
+	
+		
+		
+		//gl.drawArrays(gl.TRIANGLES, 0, bufers.player.vertexPositionBuffer[bufers.player.animation].numItems);		
+    }	
+
+
+
+   function drawBoxman(){
+	   
+	   
+	   gl.useProgram(shaderProgram["animation"]);
+		
+		//номер итерации для создания анимации на основе интерполяции из ключевых кадров тольео
+		gl.vertexAttrib1f(shaderProgram.animation.glIteration, iteration);
+		//console.dir(bufers.player.vertexPositionBuffer.animation1);
+		
+		//следующий ключевой кадр
+		gl.bindBuffer(gl.ARRAY_BUFFER, bufers.player.vertexPositionBuffer.animation1[bufers.player.animationNext]);
+       gl.vertexAttribPointer(shaderProgram.animation.vertexPositionAttributeNext, 3, gl.FLOAT, false, 0, 0);
+		
+		//текущий ключевой кадр
+        gl.bindBuffer(gl.ARRAY_BUFFER, bufers.player.vertexPositionBuffer.animation1[bufers.player.animation]);
+        gl.vertexAttribPointer(shaderProgram.animation.vertexPositionAttribute, 3, gl.FLOAT, false, 0, 0);
+		
+		//текстура
+       gl.bindBuffer(gl.ARRAY_BUFFER, bufers.player.vertexTextureCoordBuffer[0]);
+       gl.vertexAttribPointer(shaderProgram.animation.textureCoordAttribute, 2, gl.FLOAT, false, 0, 0);
+        
+        gl.activeTexture(gl.TEXTURE0);
+        gl.bindTexture(gl.TEXTURE_2D, textureArray[0]);
+        gl.uniform1i(shaderProgram.animation.samplerUniform, 0);
+        
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, bufers.player.vertexIndexBuffer[0]);
+        setMatrixUniforms("animation");
+       // gl.drawElements(gl.TRIANGLES, bufers.player.vertexIndexBuffer[0].numItems, gl.UNSIGNED_SHORT, 0);
+		gl.drawArrays(gl.TRIANGLES, 0, bufers.player.vertexIndexBuffer[0].numItems);
+	     
+   }
+   
+   
+   function drawWorld(){
+	   
+	   
+	    gl.useProgram(shaderProgram["world"]);
 		
 		
         gl.bindBuffer(gl.ARRAY_BUFFER, bufers.staticWorld.vertexPositionBuffer.animation1[0]);
@@ -156,58 +257,9 @@ var iteration = 1.0;
 		//console.dir(bufers.staticWorld.vertexIndexBuffer[0]);
         setMatrixUniforms("world");
         gl.drawElements(gl.TRIANGLES, bufers.staticWorld.vertexIndexBuffer[0].numItems, gl.UNSIGNED_SHORT, 0);
-		//console.dir(shaderProgram);
-
-        mvPopMatrix();
-		
-		
-        
-
-		//сохранение матрицы до вращения
-		mvPushMatrix();
-				//перемещение обьекта
-        mat4.translate(mvMatrix, [0.0, 1.0, -15.0]);
-		
-		
-        // вращение обьекта
-        mat4.rotate(mvMatrix, degToRad(rotationStateObj.xRot), [1, 0, 0]);
-        mat4.rotate(mvMatrix, degToRad(rotationStateObj.yRot), [0, 1, 0]);
-        mat4.rotate(mvMatrix, degToRad(rotationStateObj.zRot), [0, 0, 1]);
-        
-		gl.useProgram(shaderProgram["animation"]);
-		
-		gl.vertexAttrib1f(shaderProgram.animation.glIteration, iteration);
-		//console.dir(bufers.player.vertexPositionBuffer.animation1);
-		
-		gl.bindBuffer(gl.ARRAY_BUFFER, bufers.player.vertexPositionBuffer.animation1[bufers.player.animationNext]);
-       gl.vertexAttribPointer(shaderProgram.animation.vertexPositionAttributeNext, 3, gl.FLOAT, false, 0, 0);
-		
-        gl.bindBuffer(gl.ARRAY_BUFFER, bufers.player.vertexPositionBuffer.animation1[bufers.player.animation]);
-        gl.vertexAttribPointer(shaderProgram.animation.vertexPositionAttribute, 3, gl.FLOAT, false, 0, 0);
-		
-       gl.bindBuffer(gl.ARRAY_BUFFER, bufers.player.vertexTextureCoordBuffer[0]);
-       gl.vertexAttribPointer(shaderProgram.animation.textureCoordAttribute, 2, gl.FLOAT, false, 0, 0);
-        
-        gl.activeTexture(gl.TEXTURE0);
-        gl.bindTexture(gl.TEXTURE_2D, textureArray[0]);
-        gl.uniform1i(shaderProgram.animation.samplerUniform, 0);
-        
-        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, bufers.player.vertexIndexBuffer[0]);
-        setMatrixUniforms("animation");
-       // gl.drawElements(gl.TRIANGLES, bufers.player.vertexIndexBuffer[0].numItems, gl.UNSIGNED_SHORT, 0);
-		gl.drawArrays(gl.TRIANGLES, 0, bufers.player.vertexIndexBuffer[0].numItems);
-		//возвращение сохраненной матрици
-		mvPopMatrix();
-		
-	
-		
-		
-		//gl.drawArrays(gl.TRIANGLES, 0, bufers.player.vertexPositionBuffer[bufers.player.animation].numItems);		
-    }	
-
-
-
-
+	   
+	   
+   }
 	
 
 	

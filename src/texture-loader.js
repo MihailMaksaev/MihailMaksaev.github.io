@@ -11,7 +11,7 @@
 	}
 
     function iter(calback, iteration){
-		
+		//вызываем калбак только после загрузки всех текстур
 		var numCalback = 1;
 		return function(e){
 			//console.log(numCalback);

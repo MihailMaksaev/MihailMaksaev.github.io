@@ -1,48 +1,13 @@
 ﻿   
 
     function initShaders(gl) {
-		
-		var shaderProgram;
-		var shaderProgramWorld;
 		//шейдеры для анимации
-		
+		var shaderProgramAnimation =createProgram( "shader-vs", "shader-fs" );
 		//для мира с текстурой
-		var fragmentShaderWorld = getShader(gl, "shader-fs-world");
-        var vertexShaderWorld = getShader(gl, "shader-vs-world");
-		
-        var fragmentShader = getShader(gl, "shader-fs");
-        var vertexShader = getShader(gl, "shader-vs");
-		
-   
-       	//программа для мира 
-		shaderProgramWorld = gl.createProgram();
-        gl.attachShader(shaderProgramWorld, vertexShaderWorld);
-        gl.attachShader(shaderProgramWorld, fragmentShaderWorld);
-        gl.linkProgram(shaderProgramWorld);
-   
-        
-		//для анимации
-        shaderProgram = gl.createProgram();
-        gl.attachShader(shaderProgram, vertexShader);
-        gl.attachShader(shaderProgram, fragmentShader);
-        gl.linkProgram(shaderProgram);
-		
-
-
-		
-        if (!gl.getProgramParameter(shaderProgram, gl.LINK_STATUS)) {
-            alert("Could not initialise shaders");
-        }
-		
-		if (!gl.getProgramParameter(shaderProgramWorld, gl.LINK_STATUS)) {
-            alert("Could not initialise shaders");
-        }
-		
-
-		
-
+		var shaderProgramWorld = createProgram( "shader-vs-world", "shader-fs-world" );
 		
 		
+		//для мира получаем ссылки на переменные в шейдере
 	   gl.useProgram(shaderProgramWorld);
 	
         shaderProgramWorld.vertexPositionAttribute = gl.getAttribLocation(shaderProgramWorld, "aVertexPosition");
@@ -58,30 +23,48 @@
 		
 		
 		
-		        //для анимации
-       gl.useProgram(shaderProgram);
+		//для анимации
+       gl.useProgram(shaderProgramAnimation);
 		
-		shaderProgram.glIteration = gl.getAttribLocation(shaderProgram, "iteration");
+		shaderProgramAnimation.glIteration = gl.getAttribLocation(shaderProgramAnimation, "iteration");
 
-        shaderProgram.vertexPositionAttribute = gl.getAttribLocation(shaderProgram, "aVertexPosition");
-        gl.enableVertexAttribArray(shaderProgram.vertexPositionAttribute);
+        shaderProgramAnimation.vertexPositionAttribute = gl.getAttribLocation(shaderProgramAnimation, "aVertexPosition");
+        gl.enableVertexAttribArray(shaderProgramAnimation.vertexPositionAttribute);
 		
-		shaderProgram.vertexPositionAttributeNext = gl.getAttribLocation(shaderProgram, "aVertexPositionNext");
-        gl.enableVertexAttribArray(shaderProgram.vertexPositionAttributeNext);
+		shaderProgramAnimation.vertexPositionAttributeNext = gl.getAttribLocation(shaderProgramAnimation, "aVertexPositionNext");
+        gl.enableVertexAttribArray(shaderProgramAnimation.vertexPositionAttributeNext);
 
-        shaderProgram.textureCoordAttribute = gl.getAttribLocation(shaderProgram, "aTextureCoord");
-        gl.enableVertexAttribArray(shaderProgram.textureCoordAttribute);
+        shaderProgramAnimation.textureCoordAttribute = gl.getAttribLocation(shaderProgramAnimation, "aTextureCoord");
+        gl.enableVertexAttribArray(shaderProgramAnimation.textureCoordAttribute);
 	   
 	  //  shaderProgram.vertexColorAttribute = gl.getAttribLocation(shaderProgram, "aVertexColor");
       //  gl.enableVertexAttribArray(shaderProgram.vertexColorAttribute);
 
-        shaderProgram.pMatrixUniform = gl.getUniformLocation(shaderProgram, "uPMatrix");
-        shaderProgram.mvMatrixUniform = gl.getUniformLocation(shaderProgram, "uMVMatrix");
-        shaderProgram.samplerUniform = gl.getUniformLocation(shaderProgram, "uSampler");
+        shaderProgramAnimation.pMatrixUniform = gl.getUniformLocation(shaderProgramAnimation, "uPMatrix");
+        shaderProgramAnimation.mvMatrixUniform = gl.getUniformLocation(shaderProgramAnimation, "uMVMatrix");
+        shaderProgramAnimation.samplerUniform = gl.getUniformLocation(shaderProgramAnimation, "uSampler");
 		
 		
 		
-		return {animation: shaderProgram, world: shaderProgramWorld} ;
+		return {animation: shaderProgramAnimation, world: shaderProgramWorld} ;
+		
+		
+		function createProgram( vertexShaderID, fragmentShaderID ){
+			
+			var fragmentShader = getShader(gl, fragmentShaderID);
+            var vertexShader = getShader(gl, vertexShaderID);
+				//программа для мира 
+		   var program = gl.createProgram();
+           gl.attachShader(program, vertexShader);
+           gl.attachShader(program, fragmentShader);
+           gl.linkProgram(program);
+		
+		   if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+             alert("Could not initialise shaders");
+           }
+			
+	       return program;
+		}
     }
 	
 	
@@ -95,7 +78,7 @@
 		// для каждой анимации(пока что одна) создаем массив с ключевыми кадрами
 		for(var key in model){
 			vertexPositionBuffer[key+""] = [];
-			
+			// создаем буферы для всех ключевых кадров анимации
 			model[key].vertices.forEach(function(item, i){
 				//console.log("ll");
 				
