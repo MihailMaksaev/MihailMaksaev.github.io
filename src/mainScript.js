@@ -123,78 +123,34 @@ var iteration = 1.0;
         mat4.identity(mvMatrix);
 		
 //отрисовка мира			
-		mvPushMatrix();
 		
-		mat4.translate(mvMatrix, [0.0, -3.0, -25.0]);
-		//mat4.rotate(mvMatrix, degToRad(rotationStateObj.yRot), [0, 1, 0]);
-		//mat4.rotate(mvMatrix, degToRad(rotationStateObj.yRot), [0, 0, 0]);
-       // mat4.rotate(mvMatrix, degToRad(rCube), [1, 1, 1]);
+		
+		drawWorld([0.0, -3.0, -25.0]);
 
-		//console.dir(shaderProgram);
-		
-		drawWorld();
+      
+//отрисовка моделей
+		drawBoxman([0.0, 0.7, -25.0], { xRot: 0, yRot: 160, zRot: 0});
 
-        mvPopMatrix();
 		
+		drawBoxman( [5.0, 0.7, -32.0], { xRot: 0, yRot: 40, zRot: 0});
+
 		
-        
-//отрисовка моделей	
-		//сохранение матрицы до вращения
-		mvPushMatrix();
-		//перемещение обьекта
-        mat4.translate(mvMatrix, [0.0, 0.7, -25.0]);
-		
-		
-        // вращение обьекта
-        mat4.rotate(mvMatrix, degToRad(rotationStateObj.xRot), [1, 0, 0]);
-        mat4.rotate(mvMatrix, degToRad(rotationStateObj.yRot), [0, 1, 0]);
-        mat4.rotate(mvMatrix, degToRad(rotationStateObj.zRot), [0, 0, 1]);
-		
-		
-		
-		drawBoxman();
-		//возвращение сохраненной матрици
-		mvPopMatrix();
-		
-//////////////////////////////////////////////////////////////////////////////////////////	
-		mvPushMatrix();
-				//перемещение обьекта
-        mat4.translate(mvMatrix, [5.0, 0.7, -32.0]);
-		
-		
-        // вращение обьекта
-        mat4.rotate(mvMatrix, degToRad(rotationStateObj.xRot), [1, 0, 0]);
-        mat4.rotate(mvMatrix, degToRad(rotationStateObj.yRot), [0, 1, 0]);
-        mat4.rotate(mvMatrix, degToRad(rotationStateObj.zRot), [0, 0, 1]);
-		
-		drawBoxman();
-		//возвращение сохраненной матрици
-		mvPopMatrix();
-		
-//////////////////////////////////////////////////////////////////////////////////////////	
-		mvPushMatrix();
-				//перемещение обьекта
-        mat4.translate(mvMatrix, [-3.0, 0.75, -12.0]);
-		
-		
-        // вращение обьекта
-        mat4.rotate(mvMatrix, degToRad(rotationStateObj.xRot), [1, 0, 0]);
-        mat4.rotate(mvMatrix, degToRad(rotationStateObj.yRot), [0, 1, 0]);
-        mat4.rotate(mvMatrix, degToRad(rotationStateObj.zRot), [0, 0, 1]);
-		
-		drawBoxman();
-		//возвращение сохраненной матрици
-		mvPopMatrix();		
-		
+		drawBoxman([-3.0, 0.75, -12.0] ,rotationStateObj);
 	
-		
-		
-		//gl.drawArrays(gl.TRIANGLES, 0, bufers.player.vertexPositionBuffer[bufers.player.animation].numItems);		
     }	
 
 
 
-   function drawBoxman(){
+   function drawBoxman(translateArray, rotationStateObj){
+	   mvPushMatrix();
+	   		//перемещение обьекта
+        mat4.translate(mvMatrix, translateArray);
+		
+		
+        // вращение обьекта
+        mat4.rotate(mvMatrix, degToRad(rotationStateObj.xRot), [1, 0, 0]);
+        mat4.rotate(mvMatrix, degToRad(rotationStateObj.yRot), [0, 1, 0]);
+        mat4.rotate(mvMatrix, degToRad(rotationStateObj.zRot), [0, 0, 1]);
 	   
 	   
 	   gl.useProgram(shaderProgram["animation"]);
@@ -223,11 +179,16 @@ var iteration = 1.0;
         setMatrixUniforms("animation");
        // gl.drawElements(gl.TRIANGLES, bufers.player.vertexIndexBuffer[0].numItems, gl.UNSIGNED_SHORT, 0);
 		gl.drawArrays(gl.TRIANGLES, 0, bufers.player.vertexIndexBuffer[0].numItems);
+		
+		mvPopMatrix();
 	     
    }
    
    
-   function drawWorld(){
+   function drawWorld(translateArray){
+	   mvPushMatrix();
+		
+		mat4.translate(mvMatrix, translateArray);
 	   
 	   
 	    gl.useProgram(shaderProgram["world"]);
@@ -257,7 +218,9 @@ var iteration = 1.0;
 		//console.dir(bufers.staticWorld.vertexIndexBuffer[0]);
         setMatrixUniforms("world");
         gl.drawElements(gl.TRIANGLES, bufers.staticWorld.vertexIndexBuffer[0].numItems, gl.UNSIGNED_SHORT, 0);
-	   
+		
+		
+	   mvPopMatrix();
 	   
    }
 	
