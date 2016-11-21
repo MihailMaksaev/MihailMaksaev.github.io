@@ -156,9 +156,11 @@ var iteration = 1.0;
 
         mat4.identity(mvMatrix);
 		//обработка движения камеры при ходьбе и поворотах
-		mat4.rotate(mvMatrix, degToRad(-pitch), [1, 0, 0]);
-        mat4.rotate(mvMatrix, degToRad(-yaw), [0, 1, 0]);
-        mat4.translate(mvMatrix, [-xPos, -yPos, -zPos]);
+		mat4.rotate(mvMatrix, degToRad(20-pitch), [1, 0, 0]);
+        //mat4.rotate(mvMatrix, degToRad(-yaw), [0, 1, 0]);
+        mat4.translate(mvMatrix, [-xPos, (-5.0-yPos), (-5.0-zPos)]);
+		
+		drawBoxman([xPos, (yPos+0.7), (zPos-10.0)], { xRot: 0, yRot: (180+yaw), zRot: 0});
 		
 //отрисовка мира			
 		
@@ -304,7 +306,7 @@ var iteration = 1.0;
 
         if (currentlyPressedKeys[38] || currentlyPressedKeys[87]) {
             // Up cursor key or W
-			console.log("w-pressed");
+			//console.log("w-pressed");
             speed = 0.003;
         } else if (currentlyPressedKeys[40] || currentlyPressedKeys[83]) {
             // Down cursor key
