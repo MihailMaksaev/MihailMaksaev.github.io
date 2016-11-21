@@ -104,69 +104,7 @@
 	
 </script>
 
-<!--
 
-	attribute vec3 aVertexPosition;
-	
-	
-    attribute vec2 aTextureCoord;
-	
-    
-
-    uniform mat4 uMVMatrix;
-    uniform mat4 uPMatrix;
-
-    varying vec2 vTextureCoord;
-
-     
-    void main(void) {
-	
-
-		
-        gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);
-        vTextureCoord = aTextureCoord;
-		
-		
-		
-    }
-
-
-
--->
-
-
-<!--
-
-   attribute vec3 aVertexPositionNext;
-	attribute vec3 aVertexPosition;
-	attribute vec4 iteration;
-	
-	
-    attribute vec2 aTextureCoord;
-	
-    
-
-    uniform mat4 uMVMatrix;
-    uniform mat4 uPMatrix;
-
-    varying vec2 vTextureCoord;
-
-     
-    void main(void) {
-	
-	    vec3 transformVertexPosition;
-		
-		transformVertexPosition.x = aVertexPosition.x+ (aVertexPositionNext.x - aVertexPosition.x)/20.0*iteration.x;
-		transformVertexPosition.y = aVertexPosition.y + (aVertexPositionNext.y - aVertexPosition.y)/20.0*iteration.x;
-		transformVertexPosition.z = aVertexPosition.z + (aVertexPositionNext.z - aVertexPosition.z)/20.0*iteration.x;
-		
-        gl_Position = uPMatrix * uMVMatrix * vec4(transformVertexPosition, 1.0);
-        vTextureCoord = aTextureCoord;
-		
-		
-		
-    }
-	-->
 
 
 </head>
@@ -178,7 +116,7 @@
 
 
 <body>
-  
+ <p> w a s d - движение и вращение; pageUp pageDn - наклон вниз вверх </p> 
 
     <canvas id="canvas-game" style="border: none;" width="500" height="500"></canvas>
 

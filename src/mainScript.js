@@ -1,4 +1,18 @@
 ﻿
+    var pitch = 0;
+    var pitchRate = 0;
+
+    var yaw = 0;
+    var yawRate = 0;
+
+    var xPos = 0;
+    var yPos = 0.4;
+    var zPos = 0;
+
+    var speed = 0;
+
+
+
 
 var ModelWorldState ={};
 
@@ -75,6 +89,10 @@ function webGLStart(canvId) {
 
         gl.clearColor(0.0, 0.0, 0.0, 1.0);
         gl.enable(gl.DEPTH_TEST);
+		
+		document.onkeydown = handleKeyDown;
+        document.onkeyup = handleKeyUp;
+
 
         tick();
 }
@@ -82,6 +100,7 @@ function webGLStart(canvId) {
 
  function tick() {
         requestAnimFrame(tick);
+		handleKeys();
 		animate();
         drawScene();
        
@@ -89,6 +108,9 @@ function webGLStart(canvId) {
 	
 var lastTime = 0;
 var iteration = 1.0;
+
+// Used to make us "jog" up and down as we move forward.
+    var joggingAngle = 0;
     function animate() {
         var timeNow = new Date().getTime();
         if (lastTime != 0) {
@@ -107,6 +129,18 @@ var iteration = 1.0;
          //  rotationStateObj.xRot += (90 * elapsed) / 1000.0;
             rotationStateObj.yRot += (90 * elapsed) / 1000.0;
            // rotationStateObj.zRot += (90 * elapsed) / 1000.0;
+		   
+		   
+		    if (speed != 0) {
+                xPos -= Math.sin(degToRad(yaw)) * speed * elapsed;
+                zPos -= Math.cos(degToRad(yaw)) * speed * elapsed;
+
+                joggingAngle += elapsed * 0.6; // 0.6 "fiddle factor" - makes it feel more realistic :-)
+                yPos = Math.sin(degToRad(joggingAngle)) / 20 + 0.4
+            }
+
+            yaw += yawRate * elapsed;
+            pitch += pitchRate * elapsed;
         }
         lastTime = timeNow;
     }
@@ -121,6 +155,10 @@ var iteration = 1.0;
         mat4.perspective(45, gl.viewportWidth / gl.viewportHeight, 0.1, 100.0, pMatrix);
 
         mat4.identity(mvMatrix);
+		//обработка движения камеры при ходьбе и поворотах
+		mat4.rotate(mvMatrix, degToRad(-pitch), [1, 0, 0]);
+        mat4.rotate(mvMatrix, degToRad(-yaw), [0, 1, 0]);
+        mat4.translate(mvMatrix, [-xPos, -yPos, -zPos]);
 		
 //отрисовка мира			
 		
@@ -228,6 +266,54 @@ var iteration = 1.0;
 	
 
 
+	
+	
+	var currentlyPressedKeys = {};
+
+    function handleKeyDown(event) {
+        currentlyPressedKeys[event.keyCode] = true;
+    }
+
+
+    function handleKeyUp(event) {
+        currentlyPressedKeys[event.keyCode] = false;
+    }
+
+
+	
+	   function handleKeys() {
+        if (currentlyPressedKeys[33]) {
+            // Page Up
+            pitchRate = 0.1;
+        } else if (currentlyPressedKeys[34]) {
+            // Page Down
+            pitchRate = -0.1;
+        } else {
+            pitchRate = 0;
+        }
+
+        if (currentlyPressedKeys[37] || currentlyPressedKeys[65]) {
+            // Left cursor key or A
+            yawRate = 0.1;
+        } else if (currentlyPressedKeys[39] || currentlyPressedKeys[68]) {
+            // Right cursor key or D
+            yawRate = -0.1;
+        } else {
+            yawRate = 0;
+        }
+
+        if (currentlyPressedKeys[38] || currentlyPressedKeys[87]) {
+            // Up cursor key or W
+			console.log("w-pressed");
+            speed = 0.003;
+        } else if (currentlyPressedKeys[40] || currentlyPressedKeys[83]) {
+            // Down cursor key
+            speed = -0.003;
+        } else {
+            speed = 0;
+        }
+
+    }
 
 
 
