@@ -1,0 +1,190 @@
+﻿<html>
+
+<head>
+<title>Catch a brick</title>
+
+<script type="text/javascript" src="libs/three.js"></script>
+<script type="text/javascript" src="libs/glMatrix-0.9.5.min.js"></script>
+<script type="text/javascript" src="libs/webgl-utils.js"></script>
+<!-- загрузка и парсинг obj моделей -->
+<script type="text/javascript" src="src/glOperations.js"> </script>
+<!--<script type="text/javascript" src="libs/webgl-obj-loader.js"></script>-->
+<script type="text/javascript" src="src/static-world.js"> </script>
+<script type="text/javascript" src="src/model-loader.js"> </script>
+<script type="text/javascript" src="src/texture-loader.js"> </script>
+
+<!--<script src="libs/OBJLoader.js"></script>-->
+
+<script type="text/javascript" src="src/initShaderFn.js"></script>
+
+<script type="text/javascript" src="src/glOperations.js"> </script>
+
+
+<!-- precision lowp - низкая точность для более высокой производительности -->
+<script id="shader-fs" type="x-shader/x-fragment">
+    precision lowp float;
+
+    varying vec2 vTextureCoord;
+
+    uniform sampler2D uSampler;
+
+    void main(void) {
+        gl_FragColor = texture2D(uSampler, vec2(vTextureCoord.s, vTextureCoord.t));
+    }
+</script>
+
+<script id="shader-vs" type="x-shader/x-vertex">
+     attribute vec3 aVertexPositionNext;
+	attribute vec3 aVertexPosition;
+	attribute vec4 iteration;
+	
+	
+	
+    attribute vec2 aTextureCoord;
+	
+    
+
+    uniform mat4 uMVMatrix;
+    uniform mat4 uPMatrix;
+
+    varying vec2 vTextureCoord;
+
+     
+    void main(void) {
+	
+	    vec3 transformVertexPosition;
+		
+		transformVertexPosition.x = aVertexPosition.x+ (aVertexPositionNext.x - aVertexPosition.x)/5.0*iteration.x;
+		transformVertexPosition.y = aVertexPosition.y + (aVertexPositionNext.y - aVertexPosition.y)/5.0*iteration.x;
+		transformVertexPosition.z = aVertexPosition.z + (aVertexPositionNext.z - aVertexPosition.z)/5.0*iteration.x;
+		
+        gl_Position = uPMatrix * uMVMatrix * vec4(transformVertexPosition, 1.0);
+        vTextureCoord = aTextureCoord;		
+    }
+	
+</script>
+
+<script id="shader-fs-world" type="x-shader/x-fragment">
+    precision lowp float;
+
+    varying vec2 vTextureCoord;
+
+    uniform sampler2D uSampler;
+
+    void main(void) {
+        gl_FragColor = texture2D(uSampler, vec2(vTextureCoord.s, vTextureCoord.t));
+    }
+</script>
+
+<script id="shader-vs-world" type="x-shader/x-vertex">
+   
+	attribute vec3 aVertexPosition;
+	
+	
+	
+    attribute vec2 aTextureCoord;
+	
+    
+
+    uniform mat4 uMVMatrix;
+    uniform mat4 uPMatrix;
+
+    varying vec2 vTextureCoord;
+
+     
+    void main(void) {
+	
+	   
+		
+		
+		
+        gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);
+        vTextureCoord = aTextureCoord;		
+    }
+	
+</script>
+
+<!--
+
+	attribute vec3 aVertexPosition;
+	
+	
+    attribute vec2 aTextureCoord;
+	
+    
+
+    uniform mat4 uMVMatrix;
+    uniform mat4 uPMatrix;
+
+    varying vec2 vTextureCoord;
+
+     
+    void main(void) {
+	
+
+		
+        gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);
+        vTextureCoord = aTextureCoord;
+		
+		
+		
+    }
+
+
+
+-->
+
+
+<!--
+
+   attribute vec3 aVertexPositionNext;
+	attribute vec3 aVertexPosition;
+	attribute vec4 iteration;
+	
+	
+    attribute vec2 aTextureCoord;
+	
+    
+
+    uniform mat4 uMVMatrix;
+    uniform mat4 uPMatrix;
+
+    varying vec2 vTextureCoord;
+
+     
+    void main(void) {
+	
+	    vec3 transformVertexPosition;
+		
+		transformVertexPosition.x = aVertexPosition.x+ (aVertexPositionNext.x - aVertexPosition.x)/20.0*iteration.x;
+		transformVertexPosition.y = aVertexPosition.y + (aVertexPositionNext.y - aVertexPosition.y)/20.0*iteration.x;
+		transformVertexPosition.z = aVertexPosition.z + (aVertexPositionNext.z - aVertexPosition.z)/20.0*iteration.x;
+		
+        gl_Position = uPMatrix * uMVMatrix * vec4(transformVertexPosition, 1.0);
+        vTextureCoord = aTextureCoord;
+		
+		
+		
+    }
+	-->
+
+
+</head>
+
+
+<body>
+
+<h2>Catch a brick</h3> 
+
+
+<body>
+  
+
+    <canvas id="canvas-game" style="border: none;" width="500" height="500"></canvas>
+
+ 
+</body>
+
+<script type="text/javascript" src="src/mainScript.js"> </script>
+</body>
+</html>
